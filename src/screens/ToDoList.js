@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Alert, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, FlatList, KeyboardAvoidingView, Platform, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Feather } from '@expo/vector-icons';
@@ -82,25 +82,34 @@ const styles = StyleSheet.create({
 import { useDispatch, useSelector } from 'react-redux';
 import { setTasks } from '../redux/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Dialog from "react-native-dialog";
+import DialogInput from 'react-native-dialog-input';
 
 export default function ToDoList() {
     const { tasks } = useSelector(state => state.taskReducer);
     const dispatch = useDispatch();
 
     const [task, setTask] = useState('') //Store input onChange new task
-    const [visible, setVisible] = useState(false) //State alert dialog
+    const [update, setUpdate] = useState('')
+    const [visible, setVisible] = useState(false)
+    const [updateID, setUpdateID] = useState('')
 
-    const showDialog = () => {
+    const handleVisible = () => {
         setVisible(true)
     }
 
-    const handleCancel = () => {
+    const handleClose = () => {
         setVisible(false)
+    }
+
+    const handleSubmit = (value) => {
+        setUpdate(value)
+        editTask(updateID)
+        handleClose()
     }
 
     useEffect(() => {
         getTasks();
+        editTask()
     }, [])
 
     const getTasks = () => {
@@ -150,7 +159,7 @@ export default function ToDoList() {
             tasks.splice(index, 1)
             var updateTask = {
                 ID : id,
-                Task : 'Dummy dari code'
+                Task : update
             }
 
             let newTasks = []
@@ -185,7 +194,7 @@ export default function ToDoList() {
             </View>
 
             <View style={styles.taskWrapper}>
-                <FlatList 
+                <FlatList
                     data={tasks}
                     renderItem={ ({item}) => 
                         <View style={styles.tasks}>
@@ -195,8 +204,18 @@ export default function ToDoList() {
                                     onPress={() => {deleteTask(item.ID)}}
                                 >    
                                 </TouchableOpacity>
-                                <Text style={styles.itemTask}>{item.Task}</Text>
-                                <TouchableOpacity onPress={() => {editTask(item.ID)}}>
+                                <Text style={styles.itemTask}  onPress={() => {editTask(item.ID)}}>{item.Task}</Text> 
+                                <DialogInput 
+                                    isDialogVisible={visible} 
+                                    title={"Change task?"}
+                                    onChangeText={(value) => {setUpdate(value)}}
+                                    submitInput={(inputText) => {handleSubmit(inputText)}}
+                                    closeDialog={handleClose}
+                                />
+                                <TouchableOpacity onPress={() => {
+                                    handleVisible()
+                                    setUpdateID(item.ID)
+                                }}>
                                     <Feather style={styles.editTask} name="edit" size={24} color="black" />
                                 </TouchableOpacity>
                             </View>
