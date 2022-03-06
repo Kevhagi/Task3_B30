@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View, StatusBar, SafeAreaView } from "react-native";
 
-import Row from "../components/Calculator-2/Row";
+import Row from "../components/Row";
 import Button from "../components/Calculator-2/Button";
 import calculator, { initialState } from "../components/Calculator-2/calculator";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFA0A0",
+    backgroundColor: "#E8EAED",
     justifyContent: "flex-start",
     alignItems: "center"
   },
@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
     paddingStart: 20,
     marginVertical: 10,
     fontSize: 24,
-    fontWeight: "700",
-    color: "white"
+    fontWeight: "700"
   },
   value: {
     fontSize: 40,
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingRight: 20,
     marginBottom: 10,
-    backgroundColor: "#ECECEC"
+    backgroundColor: "#FFF"
   }
 });
 

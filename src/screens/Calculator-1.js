@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TextInput } from 'react-native';
 
-import Row from '../components/Calculator-1/Row'
+import Row from '../components/Row'
 import Button from "../components/Calculator-1/Button"
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFA0A0',
+    backgroundColor: '#E8EAED',
     justifyContent: 'center',
     alignItems : "center"
   },
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   input : {
     height : 50,
     borderRadius : 10,
-    backgroundColor : "#ECECEC",
+    backgroundColor : "#FFF",
     fontSize : 24,
     textAlign : "right",
     paddingHorizontal : 10
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     marginTop : 30,
     height : 50,
     borderRadius : 10,
-    backgroundColor : "#ECECEC",
+    backgroundColor : "#FFF",
     fontSize : 38,
     textAlign : "right",
     paddingHorizontal : 10

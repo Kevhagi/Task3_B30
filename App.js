@@ -22,7 +22,7 @@ function MyTab() {
       screenOptions={({ route }) => ({
         headerMode: "screen",
         headerTintColor: "white",
-        headerStyle: { backgroundColor: "red" },
+        headerStyle: { backgroundColor: "#55BCF6" },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 
@@ -35,8 +35,8 @@ function MyTab() {
           }
           return <Ionicons name={iconName} size={size} color={color} />
         },
-        tabBarActiveTintColor: "blue",
-        tabBarInactiveTintColor: "red"
+        tabBarActiveTintColor: "#55BCF6",
+        tabBarInactiveTintColor: "grey"
       })}
     >
       <Tab.Screen 

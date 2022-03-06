@@ -8,7 +8,10 @@ const styles = StyleSheet.create({
   text: {
     color: "#fff",
     fontSize: 50,
-    fontWeight: "700"
+    fontWeight: "700",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   },
   text65: {
     fontSize: 65
@@ -17,16 +20,16 @@ const styles = StyleSheet.create({
     fontSize: 45
   },
   button: {
-    backgroundColor: "#FF5757",
+    backgroundColor: "#96daff",
     flex: 1,
-    height: Math.floor(buttonWidth - 25),
+    height: Math.floor(buttonWidth - 20),
     alignItems: "center",
     justifyContent: "flex-start",
     borderRadius: 10,
     margin: 5
   },
   buttonAccent: {
-    backgroundColor: "#930707"
+    backgroundColor: "#55BCF6"
   }
 });
 
