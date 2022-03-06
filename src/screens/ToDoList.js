@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { Alert, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Feather } from '@expo/vector-icons';
@@ -79,33 +79,105 @@ const styles = StyleSheet.create({
     }
 })
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setTasks } from '../redux/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Dialog from "react-native-dialog";
+
 export default function ToDoList() {
-    const tasks = [
-        {
-            task: 'Task with long-long descriptions that it is make the flex wrap do their job'
-        },
-        {
-            task: 'Test'
-        },
-        {
-            task: 'Tast2'
-        },
-        {
-            task: 'Test3'
-        },
-        {
-            task: 'asd'
-        },
-        {
-            task: 'asddsads'
-        },
-        {
-            task: 'asdfddasss'
-        },
-        {
-            task: 'fdfddfgd'
+    const { tasks } = useSelector(state => state.taskReducer);
+    const dispatch = useDispatch();
+
+    const [task, setTask] = useState('') //Store input onChange new task
+    const [visible, setVisible] = useState(false) //State alert dialog
+
+    const showDialog = () => {
+        setVisible(true)
+    }
+
+    const handleCancel = () => {
+        setVisible(false)
+    }
+
+    useEffect(() => {
+        getTasks();
+    }, [])
+
+    const getTasks = () => {
+        AsyncStorage.getItem('Tasks')
+            .then(tasks => {
+                const parsedTasks = JSON.parse(tasks);
+                if (parsedTasks && typeof parsedTasks === 'object') {
+                    dispatch(setTasks(parsedTasks));
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    const addTask = () => {
+        if (task.length == 0) {
+            Alert.alert('Warning!', 'Please write your task.')
+        } else {
+            try {
+                let setID = tasks.length + 1
+                for (let i = 0; i < tasks.length; i++) {
+                    if (tasks[i].ID === setID) {
+                        setID = setID + 1 
+                    }
+                }
+
+                var Task = {
+                    ID: setID,
+                    Task: task
+                }
+                let newTasks = [];
+                newTasks = [...tasks, Task];
+                AsyncStorage.setItem('Tasks', JSON.stringify(newTasks))
+                    .then(() => {
+                        dispatch(setTasks(newTasks));
+                    })
+                    .catch(err => console.log(err))
+            } catch (error) {
+                console.log(error);
+            }
         }
-    ]
+    }
+
+    const editTask = (id) => {
+        if (tasks.length !== 0){
+            const index = tasks.findIndex(task => task.ID === id)
+
+            tasks.splice(index, 1)
+            var updateTask = {
+                ID : id,
+                Task : 'Dummy dari code'
+            }
+
+            let newTasks = []
+            newTasks = [...tasks, updateTask]
+
+            AsyncStorage.setItem('Tasks', JSON.stringify(newTasks))
+                .then(() => {
+                    dispatch(setTasks(newTasks));
+                })
+                .catch(err => console.log(err))    
+        }
+    }
+
+    const deleteTask = (id) => {
+        if (tasks.length !== 0){
+            const index = tasks.findIndex(task => task.ID === id)
+            tasks.splice(index, 1)
+            let newTasks = []
+            newTasks = [...tasks]
+            AsyncStorage.setItem('Tasks', JSON.stringify(newTasks))
+                .then(() => {
+                    dispatch(setTasks(newTasks));
+                })
+                .catch(err => console.log(err))
+        }
+    }
+
     return(
         <View style={styles.container}>
             <View style={styles.titleWrapper}>
@@ -118,16 +190,19 @@ export default function ToDoList() {
                     renderItem={ ({item}) => 
                         <View style={styles.tasks}>
                             <View style={styles.items}>
-                                <TouchableOpacity style={styles.square}>
+                                <TouchableOpacity 
+                                    style={styles.square}
+                                    onPress={() => {deleteTask(item.ID)}}
+                                >    
                                 </TouchableOpacity>
-                                <Text style={styles.itemTask}>{item.task}</Text>
-                                <TouchableOpacity>
+                                <Text style={styles.itemTask}>{item.Task}</Text>
+                                <TouchableOpacity onPress={() => {editTask(item.ID)}}>
                                     <Feather style={styles.editTask} name="edit" size={24} color="black" />
                                 </TouchableOpacity>
                             </View>
                         </View>
                     }
-                    keyExtractor={ (item) => item.task}
+                    keyExtractor={ (item, index) => index.toString()}
                 />
             </View>
             
@@ -138,8 +213,9 @@ export default function ToDoList() {
                 <TextInput 
                     style={styles.input}
                     placeholder='Write a task'
+                    onChangeText={(value) => setTask(value)}
                 />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={addTask}>
                     <View style={styles.addInputWrapper}>
                         <Text style={styles.addInput}>+</Text>    
                     </View>

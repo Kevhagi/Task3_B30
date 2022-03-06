@@ -1,4 +1,6 @@
 import * as React from "react"
+import { Provider } from 'react-redux';
+import { Store } from './src/redux/store';
 import "react-native-gesture-handler"
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -57,17 +59,19 @@ function MyTab() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="Main"
-          component={MyTab}
-          options={{
-            headerShown: false
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Main"
+            component={MyTab}
+            options={{
+              headerShown: false
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>  
+    </Provider>
   );
 }
 
